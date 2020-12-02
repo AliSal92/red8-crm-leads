@@ -1,0 +1,22 @@
+{
+    "name": "mam/red8-crm-leads",
+    "description": "PHP script to get the leads from the google sheet and send them to the CRM using CRM leads API",
+    "type": "project",
+    "license": "GNU General Public License v3.0",
+    "authors": [
+        {
+            "name": "Ali Sal",
+            "email": "ali.alsalti1992@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "vlucas/phpdotenv": "^5.2",
+        "j4mie/idiorm": "^1.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "MAM\\" : "inc/"
+        }
+    }
+}
