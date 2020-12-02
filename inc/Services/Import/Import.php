@@ -58,14 +58,14 @@ class Import implements ServiceInterface
             $leasing = ORM::for_table('red_x_leasing')->where('received', $leasing_row[0])->where('name', $leasing_row[1])->find_one();
             if(!$leasing){
                 $leasing = ORM::for_table('red_x_leasing')->create();
-                $leasing->set('received', $investment_row[0]);
-                $leasing->set('name', $investment_row[1]);
-                $leasing->set('email', $investment_row[2]);
-                $leasing->set('phone', $investment_row[3]);
-                $leasing->set('company', $investment_row[4]);
-                $leasing->set('city', $investment_row[5]);
-                $leasing->set('ad_set', $investment_row[6]);
-                $leasing->set('campaign', $investment_row[7]);
+                $leasing->set('received', $leasing_row[0]);
+                $leasing->set('name', $leasing_row[1]);
+                $leasing->set('email', $leasing_row[2]);
+                $leasing->set('phone', $leasing_row[3]);
+                $leasing->set('company', $leasing_row[4]);
+                $leasing->set('city', $leasing_row[5]);
+                $leasing->set('ad_set', $leasing_row[6]);
+                $leasing->set('campaign', $leasing_row[7]);
                 $leasing->set('status', '');
                 $leasing->save();
             }
