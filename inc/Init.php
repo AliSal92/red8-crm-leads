@@ -15,8 +15,8 @@ final class Init
     {
         return [
             DB::class,
-            API::class,
-            Import::class
+            Import::class.
+            API::class
         ];
     }
 
