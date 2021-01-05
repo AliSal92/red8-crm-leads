@@ -81,6 +81,10 @@ class API implements ServiceInterface
             if ($investments_b['purchased'] == 'Yes') {
                 $purchased = '1';
             }
+            $for_investment = '0';
+            if ($investments_b['for_investment'] == 'Yes') {
+                $for_investment = '1';
+            }
             $country = 'United States';
             if (strpos($investments_b['campaign'], 'UK') !== false) {
                 $country = 'United Kingdom';
@@ -93,7 +97,7 @@ class API implements ServiceInterface
                 'investment_level' => 'N\/A',
                 'phone' => $investments_b['phone'],
                 'source' => 'SM_FB',
-                'for_investment' => $investments_b['for_investment'],
+                'for_investment' => $for_investment,
                 'campaign' => $investments_b['campaign'],
                 'ad_set' => $investments_b['ad_set'],
                 'type' => '1',
