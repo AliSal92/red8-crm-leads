@@ -2,8 +2,8 @@
 
 namespace MAM\Services\API;
 
-use MAM\Services\ServiceInterface;
 use ORM;
+use MAM\Services\ServiceInterface;
 
 class API implements ServiceInterface
 {
@@ -11,6 +11,11 @@ class API implements ServiceInterface
      * @var ORM[] leads need to be sent
      */
     private $investments;
+
+    /**
+     * @var ORM[] leads need to be sent
+     */
+    private $investments_b;
 
     /**
      * @var ORM[] leads need to be sent
@@ -26,6 +31,8 @@ class API implements ServiceInterface
         $this->send_investments_data();
         $this->leasing = ORM::for_table('red_x_leasing')->where('status', '')->find_many();
         $this->send_leasing_data();
+        $this->investments_b = ORM::for_table('red_x_investment_b')->where('status', '')->find_many();
+        $this->send_investments_b_data();
     }
 
     /**
@@ -34,6 +41,7 @@ class API implements ServiceInterface
     private function send_investments_data()
     {
         foreach ($this->investments as $investment) {
+            /** @noinspection DuplicatedCode */
             $purchased = '0';
             if ($investment['purchased'] == 'Yes') {
                 $purchased = '1';
@@ -61,6 +69,43 @@ class API implements ServiceInterface
             $investment->save();
         }
     }
+
+    /**
+     * Send investments B leads to the CRM using API data
+     */
+    private function send_investments_b_data()
+    {
+        foreach ($this->investments_b as $investments_b) {
+            /** @noinspection DuplicatedCode */
+            $purchased = '0';
+            if ($investments_b['purchased'] == 'Yes') {
+                $purchased = '1';
+            }
+            $country = 'United States';
+            if (strpos($investments_b['campaign'], 'UK') !== false) {
+                $country = 'United Kingdom';
+            }
+            $fields = array(
+                'country' => $country,
+                'date_created' => $investments_b['received'],
+                'email' => $investments_b['email'],
+                'fullname' => $investments_b['name'],
+                'investment_level' => 'N\/A',
+                'phone' => $investments_b['phone'],
+                'source' => 'SM_FB',
+                'for_investment' => $investments_b['for_investment'],
+                'campaign' => $investments_b['campaign'],
+                'ad_set' => $investments_b['ad_set'],
+                'type' => '1',
+                'purchased_art' => $purchased
+            );
+            $response = $this->api_request($fields);
+
+            $investments_b->set('status', $response);
+            $investments_b->save();
+        }
+    }
+
     /**
      * Send leasing leads to the CRM using API data
      */

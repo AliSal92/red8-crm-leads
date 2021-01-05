@@ -18,12 +18,18 @@ class Import implements ServiceInterface
     private $leasing;
 
     /**
+     * @var array the csv data as an array
+     */
+    private $investment_b;
+
+    /**
      * @inheritDoc
      */
     public function register()
     {
         $this->investment = array_map('str_getcsv', file($_ENV['SHEET_INVESTMENT']));
         $this->leasing = array_map('str_getcsv', file($_ENV['SHEET_LEASING']));
+        $this->investment_b = array_map('str_getcsv', file($_ENV['SHEET_INVESTMENT_B']));
 
         $this->import_to_database();
     }
@@ -49,6 +55,25 @@ class Import implements ServiceInterface
                 $investment->set('campaign', $investment_row[7]);
                 $investment->set('status', '');
                 $investment->save();
+            }
+        }
+
+        // INVESTMENT_B DATA
+        array_shift($this->investment_b);
+        foreach ($this->investment_b as $investment_row){
+            $investment_b = ORM::for_table('red_x_investment_b')->where('received', $investment_row[0])->where('name', $investment_row[1])->find_one();
+            if(!$investment_b){
+                $investment_b = ORM::for_table('red_x_investment_b')->create();
+                $investment_b->set('received', $investment_row[0]);
+                $investment_b->set('name', $investment_row[1]);
+                $investment_b->set('email', $investment_row[2]);
+                $investment_b->set('phone', $investment_row[3]);
+                $investment_b->set('purchased', $investment_row[4]);
+                $investment_b->set('for_investment', $investment_row[5]);
+                $investment_b->set('ad_set', $investment_row[6]);
+                $investment_b->set('campaign', $investment_row[7]);
+                $investment_b->set('status', '');
+                $investment_b->save();
             }
         }
 
