@@ -1,4 +1,5 @@
 <?php
+
 namespace MAM\Services\Import;
 
 use ORM;
@@ -34,19 +35,30 @@ class Import implements ServiceInterface
         $this->import_to_database();
     }
 
+    /**
+     * #to remove 4byte characters like emojis etc..
+     * @param $string string the text that you want to remove the 4bye (emojis) from
+     * @return string|string[]|null the text without emojis
+     */
+    private function replace_4byte($string)
+    {
+        return preg_replace('/[^A-Za-z0-9\- ]/', '', $string); // Removes special chars.
+
+    }
 
     /**
      * import the csv data to the database
      */
-    private function import_to_database(){
+    private function import_to_database()
+    {
         // INVESTMENT DATA
         array_shift($this->investment);
-        foreach ($this->investment as $investment_row){
+        foreach ($this->investment as $investment_row) {
             $investment = ORM::for_table('red_x_investment')->where('received', $investment_row[0])->where('name', $investment_row[1])->find_one();
-            if(!$investment){
+            if (!$investment) {
                 $investment = ORM::for_table('red_x_investment')->create();
                 $investment->set('received', $investment_row[0]);
-                $investment->set('name', $investment_row[1]);
+                $investment->set('name', $this->replace_4byte($investment_row[1]));
                 $investment->set('email', $investment_row[2]);
                 $investment->set('phone', $investment_row[3]);
                 $investment->set('purchased', $investment_row[4]);
@@ -60,12 +72,12 @@ class Import implements ServiceInterface
 
         // INVESTMENT_B DATA
         array_shift($this->investment_b);
-        foreach ($this->investment_b as $investment_row){
+        foreach ($this->investment_b as $investment_row) {
             $investment_b = ORM::for_table('red_x_investment_b')->where('received', $investment_row[0])->where('name', $investment_row[1])->find_one();
-            if(!$investment_b){
+            if (!$investment_b) {
                 $investment_b = ORM::for_table('red_x_investment_b')->create();
                 $investment_b->set('received', $investment_row[0]);
-                $investment_b->set('name', $investment_row[1]);
+                $investment_b->set('name', $this->replace_4byte($investment_row[1]));
                 $investment_b->set('email', $investment_row[2]);
                 $investment_b->set('phone', $investment_row[3]);
                 $investment_b->set('purchased', $investment_row[4]);
@@ -79,12 +91,12 @@ class Import implements ServiceInterface
 
         // LEASING DATA
         array_shift($this->leasing);
-        foreach ($this->leasing as $leasing_row){
+        foreach ($this->leasing as $leasing_row) {
             $leasing = ORM::for_table('red_x_leasing')->where('received', $leasing_row[0])->where('name', $leasing_row[1])->find_one();
-            if(!$leasing){
+            if (!$leasing) {
                 $leasing = ORM::for_table('red_x_leasing')->create();
                 $leasing->set('received', $leasing_row[0]);
-                $leasing->set('name', $leasing_row[1]);
+                $leasing->set('name', $this->replace_4byte($leasing_row[1]));
                 $leasing->set('email', $leasing_row[2]);
                 $leasing->set('phone', $leasing_row[3]);
                 $leasing->set('company', $leasing_row[4]);

@@ -54,7 +54,7 @@ class API implements ServiceInterface
                 'country' => $country,
                 'date_created' => $investment['received'],
                 'email' => $investment['email'],
-                'fullname' => $investment['name'],
+                'fullname' => $this->replace_4byte($investment['name']),
                 'investment_level' => $investment['investment_level'],
                 'phone' => $investment['phone'],
                 'source' => 'SMM',
@@ -68,6 +68,17 @@ class API implements ServiceInterface
             $investment->set('status', $response);
             $investment->save();
         }
+    }
+
+    /**
+     * #to remove 4byte characters like emojis etc..
+     * @param $string string the text that you want to remove the 4bye (emojis) from
+     * @return string|string[]|null the text without emojis
+     */
+    private function replace_4byte($string)
+    {
+        return preg_replace('/[^A-Za-z0-9\- ]/', '', $string); // Removes special chars.
+
     }
 
     /**
@@ -93,7 +104,7 @@ class API implements ServiceInterface
                 'country' => $country,
                 'date_created' => $investments_b['received'],
                 'email' => $investments_b['email'],
-                'fullname' => $investments_b['name'],
+                'fullname' => $this->replace_4byte($investments_b['name']),
                 'investment_level' => 'N\/A',
                 'phone' => $investments_b['phone'],
                 'source' => 'SM_FB',
@@ -124,7 +135,7 @@ class API implements ServiceInterface
                 'country' => $country,
                 'date_created' => $leasing['received'],
                 'email' => $leasing['email'],
-                'fullname' => $leasing['name'],
+                'fullname' => $this->replace_4byte($leasing['name']),
                 'investment_level' => 0,
                 'phone' => $leasing['phone'],
                 'source' => 'CLMM',
@@ -145,7 +156,8 @@ class API implements ServiceInterface
      * @param $fields array the post fields as requested by the client API
      * @return bool|string false on fail the response message on success
      */
-    private function api_request($fields){
+    private function api_request($fields)
+    {
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $_ENV['API_URL'],
