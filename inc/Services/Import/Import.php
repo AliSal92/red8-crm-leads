@@ -54,7 +54,7 @@ class Import implements ServiceInterface
         // INVESTMENT DATA
         array_shift($this->investment);
         foreach ($this->investment as $investment_row) {
-            $investment = ORM::for_table('red_x_investment')->where('received', $investment_row[0])->where('name', replace_4byte($investment_row[1]))->find_one();
+            $investment = ORM::for_table('red_x_investment')->where('received', $investment_row[0])->where('name', $this->replace_4byte($investment_row[1]))->find_one();
             if (!$investment) {
                 $investment = ORM::for_table('red_x_investment')->create();
                 $investment->set('received', $investment_row[0]);
@@ -73,7 +73,7 @@ class Import implements ServiceInterface
         // INVESTMENT_B DATA
         array_shift($this->investment_b);
         foreach ($this->investment_b as $investment_row) {
-            $investment_b = ORM::for_table('red_x_investment_b')->where('received', $investment_row[0])->where('name', replace_4byte($investment_row[1]))->find_one();
+            $investment_b = ORM::for_table('red_x_investment_b')->where('received', $investment_row[0])->where('name', $this->replace_4byte($investment_row[1]))->find_one();
             if (!$investment_b) {
                 $investment_b = ORM::for_table('red_x_investment_b')->create();
                 $investment_b->set('received', $investment_row[0]);
@@ -92,7 +92,7 @@ class Import implements ServiceInterface
         // LEASING DATA
         array_shift($this->leasing);
         foreach ($this->leasing as $leasing_row) {
-            $leasing = ORM::for_table('red_x_leasing')->where('received', $leasing_row[0])->where('name', replace_4byte($leasing_row[1]))->find_one();
+            $leasing = ORM::for_table('red_x_leasing')->where('received', $leasing_row[0])->where('name', $this->replace_4byte($leasing_row[1]))->find_one();
             if (!$leasing) {
                 $leasing = ORM::for_table('red_x_leasing')->create();
                 $leasing->set('received', $leasing_row[0]);
