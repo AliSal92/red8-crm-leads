@@ -24,6 +24,11 @@ class Import implements ServiceInterface
     private $investment_b;
 
     /**
+     * @var array the csv data as an array
+     */
+    private $linkedin;
+
+    /**
      * @inheritDoc
      */
     public function register()
@@ -31,6 +36,7 @@ class Import implements ServiceInterface
         $this->investment = array_map('str_getcsv', file($_ENV['SHEET_INVESTMENT']));
         $this->leasing = array_map('str_getcsv', file($_ENV['SHEET_LEASING']));
         $this->investment_b = array_map('str_getcsv', file($_ENV['SHEET_INVESTMENT_B']));
+        $this->linkedin = array_map('str_getcsv', file($_ENV['SHEET_LINKEDIN']));
 
         $this->import_to_database();
     }
@@ -56,6 +62,9 @@ class Import implements ServiceInterface
         foreach ($this->investment as $investment_row) {
             $investment = ORM::for_table('red_x_investment')->where('received', $investment_row[0])->where('name', $this->replace_4byte($investment_row[1]))->find_one();
             if (!$investment) {
+                if(!$investment_row[0]){
+                    continue;
+                }
                 $investment = ORM::for_table('red_x_investment')->create();
                 $investment->set('received', $investment_row[0]);
                 $investment->set('name', $this->replace_4byte($investment_row[1]));
@@ -75,6 +84,9 @@ class Import implements ServiceInterface
         foreach ($this->investment_b as $investment_row) {
             $investment_b = ORM::for_table('red_x_investment_b')->where('received', $investment_row[0])->where('name', $this->replace_4byte($investment_row[1]))->find_one();
             if (!$investment_b) {
+                if(!$investment_row[0]){
+                    continue;
+                }
                 $investment_b = ORM::for_table('red_x_investment_b')->create();
                 $investment_b->set('received', $investment_row[0]);
                 $investment_b->set('name', $this->replace_4byte($investment_row[1]));
@@ -89,11 +101,36 @@ class Import implements ServiceInterface
             }
         }
 
+        // LinkedIN DATA
+        array_shift($this->linkedin);
+        foreach ($this->linkedin as $linkedin_row) {
+            $linkedin = ORM::for_table('red_x_linkedin')->where('received', $linkedin_row[0])->where('name', $this->replace_4byte($linkedin_row[1]))->find_one();
+            if (!$linkedin) {
+                if(!$linkedin_row[0]){
+                    continue;
+                }
+                $linkedin = ORM::for_table('red_x_linkedin')->create();
+                $linkedin->set('received', $linkedin_row[0]);
+                $linkedin->set('name', $this->replace_4byte($linkedin_row[1]));
+                $linkedin->set('country', $linkedin_row[2]);
+                $linkedin->set('phone', $linkedin_row[3]);
+                $linkedin->set('purchased', $linkedin_row[4]);
+                $linkedin->set('for_investment', $linkedin_row[5]);
+                $linkedin->set('ad_set', $linkedin_row[6]);
+                $linkedin->set('campaign', $linkedin_row[7]);
+                $linkedin->set('status', '');
+                $linkedin->save();
+            }
+        }
+
         // LEASING DATA
         array_shift($this->leasing);
         foreach ($this->leasing as $leasing_row) {
             $leasing = ORM::for_table('red_x_leasing')->where('received', $leasing_row[0])->where('name', $this->replace_4byte($leasing_row[1]))->find_one();
             if (!$leasing) {
+                if(!$leasing_row[0]){
+                    continue;
+                }
                 $leasing = ORM::for_table('red_x_leasing')->create();
                 $leasing->set('received', $leasing_row[0]);
                 $leasing->set('name', $this->replace_4byte($leasing_row[1]));

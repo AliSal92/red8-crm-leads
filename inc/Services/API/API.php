@@ -23,6 +23,11 @@ class API implements ServiceInterface
     private $leasing;
 
     /**
+     * @var ORM[] leads need to be sent
+     */
+    private $linkedin;
+
+    /**
      * @inheritDoc
      */
     public function register()
@@ -33,6 +38,8 @@ class API implements ServiceInterface
         $this->send_leasing_data();
         $this->investments_b = ORM::for_table('red_x_investment_b')->where('status', '')->find_many();
         $this->send_investments_b_data();
+        $this->linkedin = ORM::for_table('red_x_linkedin')->where('status', '')->find_many();
+        $this->send_linkedin_data();
     }
 
     /**
@@ -118,6 +125,44 @@ class API implements ServiceInterface
 
             $investments_b->set('status', $response);
             $investments_b->save();
+        }
+    }
+
+    /**
+     * Send Linkedin leads to the CRM using API data
+     */
+    private function send_linkedin_data()
+    {
+        foreach ($this->linkedin as $linkedin) {
+            /** @noinspection DuplicatedCode */
+            $purchased = '0';
+            if ($linkedin['purchased'] == 'Yes') {
+                $purchased = '1';
+            }
+            $for_investment = '0';
+            if ($linkedin['for_investment'] == 'Yes') {
+                $for_investment = '1';
+            }
+            $country = 'United States';
+            if (strpos($linkedin['campaign'], 'UK') !== false) {
+                $country = 'United Kingdom';
+            }
+            $fields = array(
+                'country' => $country,
+                'date_created' => $linkedin['received'],
+                'fullname' => $this->replace_4byte($linkedin['name']),
+                'investment_level' => 'N\/A',
+                'phone' => $linkedin['phone'],
+                'source' => 'MAM_FB',
+                'for_investment' => $for_investment,
+                'campaign' => $linkedin['campaign'],
+                'ad_set' => $linkedin['ad_set'],
+                'type' => '1',
+                'purchased_art' => $purchased
+            );
+            $response = $this->api_request($fields);
+            $linkedin->set('status', $response);
+            $linkedin->save();
         }
     }
 

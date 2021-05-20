@@ -19,7 +19,8 @@ class DB implements ServiceInterface
         ORM::configure('id_column_overrides', array(
             'red_x_investment' => 'id',
             'red_x_leasing' => 'id',
-            'red_x_investment_b' => 'id'
+            'red_x_investment_b' => 'id',
+            'red_x_linkedin' => 'id'
         ));
 
         $this->init_tables();
@@ -34,5 +35,6 @@ class DB implements ServiceInterface
         $db->exec("CREATE TABLE IF NOT EXISTS `red_x_investment` ( `id` INT NOT NULL AUTO_INCREMENT , `received` DATETIME NOT NULL , `name` TEXT NOT NULL , `email` TEXT NOT NULL , `phone` TEXT NOT NULL , `purchased` TEXT NOT NULL , `investment_level` TEXT NOT NULL , `ad_set` TEXT NOT NULL , `campaign` TEXT NOT NULL , `status` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
         $db->exec("CREATE TABLE IF NOT EXISTS `red_x_leasing` ( `id` INT NOT NULL AUTO_INCREMENT , `received` DATETIME NOT NULL , `name` TEXT NOT NULL , `email` TEXT NOT NULL , `phone` TEXT NOT NULL , `company` TEXT NOT NULL , `city` TEXT NOT NULL , `ad_set` TEXT NOT NULL , `campaign` TEXT NOT NULL , `status` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
         $db->exec("CREATE TABLE IF NOT EXISTS `red_x_investment_b` ( `id` INT NOT NULL AUTO_INCREMENT , `received` DATETIME NOT NULL , `name` TEXT NOT NULL , `email` TEXT NOT NULL , `phone` TEXT NOT NULL , `purchased` TEXT NOT NULL , `for_investment` TEXT NOT NULL , `ad_set` TEXT NOT NULL , `campaign` TEXT NOT NULL , `status` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+        $db->exec("CREATE TABLE IF NOT EXISTS `red_x_linkedin` ( `id` INT NOT NULL AUTO_INCREMENT , `received` DATETIME NOT NULL , `name` TEXT NOT NULL , `country` TEXT NOT NULL , `phone` TEXT NOT NULL , `purchased` TEXT NOT NULL , `for_investment` TEXT NOT NULL , `ad_set` TEXT NOT NULL , `campaign` TEXT NOT NULL , `status` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
     }
 }
