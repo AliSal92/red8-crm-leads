@@ -153,7 +153,7 @@ class API implements ServiceInterface
                 'fullname' => $this->replace_4byte($linkedin['name']),
                 'investment_level' => 'N\/A',
                 'phone' => $linkedin['phone'],
-                'source' => 'MAM_FB',
+                'source' => 'MAM_LI',
                 'for_investment' => $for_investment,
                 'campaign' => $linkedin['campaign'],
                 'ad_set' => $linkedin['ad_set'],
